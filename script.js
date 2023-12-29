@@ -263,10 +263,10 @@ class App {
          <li class="workout workout--${workout.type}" data-id="${workout.id}">
         <h2 class="workout__title">${workout.description}</h2>
         <button class="edit" id="editButton">
-            <i class="fa-regular fa-pen-to-square"></i>
+            <i class="fas fa-edit"></i>
         </button>
         <button class="delete-single"">
-            <i class="fa-solid fa-trash"></i>
+            <i class="fas fa-trash-alt"></i>
         </button> 
         </div>
         <div class="workout__details">
