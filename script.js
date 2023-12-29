@@ -16,7 +16,7 @@ import { Running } from './running.js';
 import { Cycling } from "./cycling.js";
 import { Weather } from "./weather.js";
 
- 
+
 
 ///////////////////////////////////application architecture///////////////////////////////////////////////////////////////// 
 
@@ -254,7 +254,6 @@ class App {
                 className: `${workout.type}-popup`
             })
             .openPopup();
-
     }
 
     _renderWorkout(workout) {
@@ -263,8 +262,12 @@ class App {
         let html = `
          <li class="workout workout--${workout.type}" data-id="${workout.id}">
         <h2 class="workout__title">${workout.description}</h2>
-        <button class="edit" id="editButton" >Edit Workout</button>
-        <button class="delete-single" id"deleteButton">Delete</button> 
+        <button class="edit" id="editButton">
+            <i class="fa-regular fa-pen-to-square"></i>
+        </button>
+        <button class="delete-single"">
+            <i class="fa-solid fa-trash"></i>
+        </button> 
         </div>
         <div class="workout__details">
           <span class="workout__icon"> ${workout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'}</span>
@@ -422,7 +425,7 @@ async function updateDisplay(temp, degreeType, city, description) {
         const formattedDescription = weatherDescription[0].toUpperCase() + weatherDescription.substring(1);
         const displayedWeather = `${formattedDescription} today in ${city}, it is ${temp.toFixed(0)} degrees ${degreeType}`
         weatherLi.textContent = displayedWeather;
-    } catch(err) {
+    } catch (err) {
         console.log(err)
         weatherLi.textContent = 'Current weather data unavailable';
     }
