@@ -74,8 +74,13 @@ a:visited {
   cursor: pointer;
 
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(6, 1fr); /* Adjust based on how many columns you need */
   gap: 0.75rem 1.5rem;
+}
+
+.workout__buttons {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .workout--running {
