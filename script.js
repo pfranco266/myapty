@@ -281,12 +281,7 @@ class App {
           <span class="workout__icon">⏱</span>
           <span class="workout__value">${workout.duration}</span>
           <span class="workout__unit">min</span>
-          <button class="edit" id="editButton">
-            <i class="fas fa-edit"></i>
-        </button>
-        <button class="delete-single"">
-            <i class="fas fa-trash-alt"></i>
-        </button> 
+
         </div>
         
         `;

@@ -78,10 +78,7 @@ a:visited {
   gap: 0.75rem 1.5rem;
 }
 
-.workout__buttons {
-  display: flex;
-  gap: 0.5rem;
-}
+
 
 .workout--running {
   border-left: 5px solid var(--color-brand--2);
