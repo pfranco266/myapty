@@ -187,11 +187,9 @@ class App {
         const workoutToEdit = this.#workouts.find(workout => {
             return workout.id === item.dataset.id;
         })
-        console.log(workoutToEdit)
 
         this._toggleElevationField(workoutToEdit.type);
 
-        console.log(workoutToEdit)
 
 
         if (workoutToEdit.type === 'running') {
@@ -419,8 +417,7 @@ async function getWeather(lat, lon, degreeType = 'celsius') {
 async function updateDisplay(temp, degreeType, city, description) {
     try {
         //convert weather to C or F, default celsius;
-        console.log('3: updateDisplay')
-        console.log(description)
+
         const weatherDescription = description || weatherInstance.description;
         const formattedDescription = weatherDescription[0].toUpperCase() + weatherDescription.substring(1);
         const displayedWeather = `${formattedDescription} today in ${city}, it is ${temp.toFixed(0)} degrees ${degreeType}`
