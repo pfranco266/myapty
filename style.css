@@ -1,7 +1,6 @@
 :root {
   --color-brand--1: #ffb545;
   --color-brand--2: #00c46a;
-
   --color-dark--1: #2d3439;
   --color-dark--2: #42484d;
   --color-light--1: #aaa;
@@ -20,6 +19,7 @@ html {
   box-sizing: border-box;
 }
 
+
 body {
   font-family: 'Manrope', sans-serif;
   color: var(--color-light--2);
@@ -27,10 +27,7 @@ body {
   line-height: 1.6;
   height: 100vh;
   overscroll-behavior-y: none;
-
   background-color: #fff;
-  padding: 2.5rem;
-
   display: flex;
 }
 
@@ -47,6 +44,51 @@ a:visited {
   padding: 3rem 5rem 4rem 5rem;
   display: flex;
   flex-direction: column;
+}
+
+.sidebar__header {
+  margin-bottom: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  height: 5.2rem;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.sidebar__button--close {
+  background: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  width: 3.2rem;
+  height: 3.2rem;
+  font-size: 2.5rem;
+  z-index: 1000;
+  color: #000000;
+  display: none;
+  display: hidden;
+}
+
+.sidebar__button--open {
+  padding: 1rem 2rem;
+  position: absolute;
+  bottom: 5%;
+  left: 5%;
+  z-index: 999;
+  background-color: var(--color-dark--1);
+  /* same color as workout markers */
+  color: white;
+  font-size: 2.5rem;
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0rem 0.3rem 1.3rem #222;
+  cursor: pointer;
+  animation: bounce 2s ease-in-out 2;
+  display: none;
 }
 
 .logo {
@@ -72,13 +114,43 @@ a:visited {
   padding: 1.5rem 2.25rem;
   margin-bottom: 1.75rem;
   cursor: pointer;
-
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 0.75rem 1.5rem;
 }
 
+.workout__header {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
+.workout__buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.workout__button {
+  width: 26px;
+  height: 26px;
+  background: none;
+  border: none;
+  color: var(--color-dark--1);
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+
+.workout__button--delete:hover {
+  color: #e70e0e;
+  transition: 0.2s;
+}
+
+.workout__button--edit:hover {
+  color: #f9a231;
+  transition: 0.2s;
+}
 
 .workout--running {
   border-left: 5px solid var(--color-brand--2);
@@ -208,6 +280,10 @@ a:visited {
   padding-right: 0.6rem;
 }
 
+.leaflet-left .leaflet-control {
+  margin-top: 60px;
+}
+
 .leaflet-popup .leaflet-popup-content {
   font-size: 1.5rem;
 }
@@ -224,7 +300,9 @@ a:visited {
   border-left: 5px solid var(--color-brand--1);
 }
 
-.navBar {
+/* WEATHER DISPLAY*/
+
+.weather {
   width: 100%;
   background-color: #2d3439;
   /* Example background color */
@@ -234,36 +312,36 @@ a:visited {
   padding: 10px 0;
   position: fixed;
   top: 0;
-  z-index: 1000;
-  /* Ensures it stays above other content */
+  z-index: 500;
   display: flex;
-  /* Aligns children in a row */
   justify-content: center;
-  /* Center align items horizontally */
 }
 
-.navBar ul {
+.weather ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
-  /* Aligns children in a row */
   justify-content: center;
-  /* Center align items horizontally */
 }
 
-.navBar li {
+.weather__li {
   margin: 0 20px;
-  /* Adjust spacing between items */
-  /* Additional styling as needed */
+
+}
+
+.sidebar__weather {
+  display: none;
+}
+
+.sidebar__weather--display {
+  display: none;
 }
 
 .container {
   display: flex;
   justify-content: space-around;
-  /* flex-direction: column; makes them columns, but without this, direction is horizontal*/
   align-items: center;
-  /* align-content: stretch; */
 }
 
 .item {
@@ -274,9 +352,19 @@ a:visited {
   line-height: 100px;
 }
 
+
 /* Repsonsiveness */
 
-@media screen and (max-width: 725px) {
+
+.sidebar__button--open.hidden {
+  display: none;
+}
+
+.hidden {
+  display: none;
+}
+
+@media screen and (max-width: 50rem) {
   body {
     display: block;
     padding: 0;
@@ -291,12 +379,35 @@ a:visited {
     transition: 0.5s;
   }
 
+  .sidebar__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .sidebar__weather {
+    color: white;
+    display: flex;
+    width: 6rem;
+    height: 6rem;
+    font-size: 2.3rem;
+    align-items: center;
+  }
+
+  .sidebar__weather--temp {
+    white-space: nowrap;
+    position: absolute;
+    top: 1.8rem;
+    left: 50%;
+  }
+
   .sidebar.open {
     transform: translateX(0);
   }
 
   .logo {
     align-self: flex-start;
+    z-index: 999;
   }
 
   .form {
@@ -304,36 +415,77 @@ a:visited {
     gap: 0.5rem 2rem;
   }
 
-  .open__btn {
+  .sidebar__button--open {
     display: block;
+    color: rgb(227, 227, 235);
   }
 
-  .close__btn {
+  .sidebar__button--close {
     display: block;
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    font-size: 4rem;
   }
 }
 
-@media screen and (max-width: 430px) {
-  .sidebar {
-    padding: 1.5rem;
-  }
 
-  .workout {
-    padding: 1rem;
-    gap: 0.5rem 1rem;
-  }
+@media screen and (max-width: 27rem) {
 
-  .workout__icon {
-    font-size: 1.5rem;
-  }
-}
-
-@media screen and (max-width: 370px) {
-  .workout__icon {
+  .weather {
     display: none;
   }
 
-  .workout__title {
-    font-size: 1.25rem;
+  .sidebar {
+    padding: 1.2rem;
+  }
+
+  .sidebar__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+  }
+
+  .logo {
+    width: 30%;
+  }
+
+  .sidebar__weather {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+  }
+
+  .sidebar__weather--temp {
+    white-space: nowrap;
+    position: absolute;
+    top: 1.8rem;
+    left: 50%;
+  }
+
+  .sidebar__button--open {
+    font-size: 2rem;
+  }
+
+  .sidebar__button--close {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+/* keyframes for open button animation bounce:  */
+@keyframes bounce {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
   }
 }

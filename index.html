@@ -23,17 +23,25 @@
 </head>
 
 <body>
-  <nav class="navBar">
+  <div class="weather">
     <ul>
-      <li id="weatherLi">Hello</li>
-      <li id="toggleForC"><a href="#"><a class="weather" id="fahrenheit" href="">F</a> | <a class="weather" id="celsius"
+      <li class="weather__li" id="weather__li--display">Hello</li>
+      <li class="weather__li" id="toggleForC"><a href="#"><a class="weather__a--f" id="fahrenheit" href="">F</a> | <a class="weather__a--c" id="celsius"
             href="">C</a></a></li>
     </ul>
-  </nav>
+  </div>
+  
 
   <div class="sidebar">
-    <img src="logo.png" alt="Logo" class="logo" />
-
+    <div class="sidebar__header">
+      <img src="logo.png" alt="Logo" class="logo" />
+    <span class="sidebar__weather">
+        <span class="sidebar__weather--temp"></span>
+    </span>
+      <button class="sidebar__button--close">
+        <i class="far fa-times-circle"></i>
+      </button>
+    </div>
     <ul class="workouts">
       <form class="form hidden">
         <div class="form__row">
@@ -99,10 +107,11 @@
   </div>
 
   <div id="map"></div>
-
-  <button class="open-btn">now build</button>
-  <button class="close-btn">Open workouts</button>
-
+  
+  <button type="button" class="sidebar__button--open">
+    My workouts 
+    <i class="fas fa-caret-right"></i>
+  </button>
 
 </body>
 

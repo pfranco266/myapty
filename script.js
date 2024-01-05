@@ -6,17 +6,20 @@ const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
-const editWorkoutButton = document.querySelector('#editButton');
-const deleteAllButton = document.querySelector('.delete-btn');
-const deleteButton = document.querySelector('.delete-single');
-const weatherLi = document.querySelector('#weatherLi');
+// const editWorkoutButton = document.querySelector('#editButton');
+// const deleteAllButton = document.querySelector('.delete-btn');
+// const editButton = document.querySelector('.workout__button--edit');
+// const deleteButton = document.querySelector('.workout__button--delete');
+const weatherLi = document.querySelector('#weather__li--display');
+const sidebarWeatherLi = document.querySelector('.sidebar__weather--temp');
 const fahrOrCels = document.querySelector('#toggleForC');
+const openButton = document.querySelector(".sidebar__button--open");
+const closeButton = document.querySelector(".sidebar__button--close");
+const sidebar = document.querySelector(".sidebar");
 
 import { Running } from './running.js';
 import { Cycling } from "./cycling.js";
 import { Weather } from "./weather.js";
-
-
 
 ///////////////////////////////////application architecture///////////////////////////////////////////////////////////////// 
 
@@ -34,8 +37,8 @@ class App {
         containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
         containerWorkouts.addEventListener('click', this._editWorkout.bind(this));
         containerWorkouts.addEventListener('click', this._deleteWorkout.bind(this))
-
-
+        openButton.addEventListener("click", this._openSidebar);
+        closeButton.addEventListener("click", this._closeSidebar);
         this._loadLocalStorage();  //get data from local storage, if previous session
     }
 
@@ -64,6 +67,7 @@ class App {
     }
 
     _showForm(e) {
+        sidebar.classList.add("open");
         this.#mapEvent = e;
         form.classList.remove('hidden');
         inputDistance.focus();
@@ -76,7 +80,22 @@ class App {
         form.style.display = 'none';
         form.classList.add('hidden');
         setTimeout(() => form.style.display = 'grid', 1000);
+    }
 
+    // MOBILE 
+    _openSidebar() {
+        sidebar.classList.add('open');
+        document.querySelector(".leaflet-control-container")
+        .classList.add("hidden");
+        openButton.classList.add("hidden");
+    }
+
+    _closeSidebar() {
+        sidebar.classList.remove('open');
+        document.querySelector(".leaflet-control-container")
+        .classList.add("hidden");
+        setTimeout(() => {
+            openButton.classList.remove("hidden");}, 400);
     }
 
     _toggleElevationField(workoutType) {
@@ -92,7 +111,6 @@ class App {
             elevationField.classList.add('form__row--hidden');
         }
     }
-
 
     _createOrUpdateWorkout(type, coords, distance, duration, cadenceOrElevation, workoutId = null) {
         console.log('3: createOrUpdate')
@@ -175,12 +193,13 @@ class App {
     }
 
     _editWorkout(e) {
-        if (!e.target.classList.contains('edit')) return;
+        if (!e.target.classList.contains('fa-edit')) return;
         this.isEdit = true;
         console.log('1: edit workout')
         const item = e.target.closest('.workout');
 
         let cadence, elevation, cadenceOrElevation;
+        console.log(item)
 
         this._showForm(e);
 
@@ -189,8 +208,6 @@ class App {
         })
 
         this._toggleElevationField(workoutToEdit.type);
-
-
 
         if (workoutToEdit.type === 'running') {
             inputType.value = workoutToEdit.type;
@@ -234,11 +251,7 @@ class App {
                 alert('Invalid inputs');
             }
 
-
         });
-
-
-
 
     }
     _renderWorkoutMarker(workout) {
@@ -256,22 +269,23 @@ class App {
             .openPopup();
     }
 
+    //    
     _renderWorkout(workout) {
         console.log('4: renderworkout')
 
         let html = `
          <li class="workout workout--${workout.type}" data-id="${workout.id}">
-        <h2 class="workout__title">${workout.description}</h2>
-        
-            
-                <button class="edit" id="editButton">
-                     <i class="fas fa-edit"></i>
-                </button>
-                <button class="delete-single"">
-                    <i class="fas fa-trash-alt"></i>
-                </button> 
-            
-        </div>
+                <div class="workout__header">
+                <h2 class="workout__title">${workout.description}</h2>
+                    <div class="workout__buttons">
+                    <button type="button" class="workout__button workout__button--edit" aria-label="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button type="button" class="workout__button workout__button--delete" aria-label="Delete">
+                        <i class="fas fa-trash-alt"></i>
+                    </button> 
+                    </div>
+                </div>
         <div class="workout__details">
           <span class="workout__icon"> ${workout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'}</span>
           <span class="workout__value">${workout.distance}</span>
@@ -281,7 +295,6 @@ class App {
           <span class="workout__icon">⏱</span>
           <span class="workout__value">${workout.duration}</span>
           <span class="workout__unit">min</span>
-          
         </div>
         
         `;
@@ -321,23 +334,18 @@ class App {
     ////////////////////////////////////////////////////////////////////////////////////
 
     _deleteWorkout(e) {
-        if (!e.target.classList.contains('delete-single')) {
+        console.log(e.target)
+        if (!e.target.classList.contains('fa-trash-alt')) {
             return;
         }
-
         const deleteMessage = confirm(`Are you sture you want to delete all your hard work?`)
-
         if (deleteMessage) {
             const workoutEl = e.target.closest(".workout")
             if (!workoutEl) return;
             const workoutDelIndex = this.#workouts.findIndex((work) => work.id === workoutEl.dataset.id)
-
             this.#workouts.splice(workoutDelIndex, 1)
-
             this._setLocalStorage()
-
             workoutEl.remove()
-
             this.#map.eachLayer(function (layer) {
                 if (layer instanceof L.Marker && layer.options.workoutID == workoutEl.dataset.id) {
                     layer.remove()
@@ -397,12 +405,15 @@ async function displayWeather(lat, lon) {
         const city = data.city.name;
         //stop here!!
         weatherInstance.setWeatherData({ kelvinTemp, city, description });
+        console.log(weatherInstance)
         const temperature = weatherInstance.getFormattedTemperature();
         const degreeType = weatherInstance.degreeType;
+
         updateDisplay(temperature, degreeType, city, newDescription);
     } catch (err) {
         console.error(err);
         weatherLi.textContent = 'Current weather data unavailable';
+        sidebarWeatherLi.textContent = 'Unvavailable';
     }
 }
 
@@ -429,9 +440,15 @@ async function updateDisplay(temp, degreeType, city, description) {
         const formattedDescription = weatherDescription[0].toUpperCase() + weatherDescription.substring(1);
         const displayedWeather = `${formattedDescription} today in ${city}, it is ${temp.toFixed(0)} degrees ${degreeType}`
         weatherLi.textContent = displayedWeather;
+
+        //weather on sidebar for smaller screens 
+        const sidebarDisplayedWeather = `${temp.toFixed(0)} ${weatherInstance.degreeType === 'celsius' ? `C` : 'F'}`
+        sidebarWeatherLi.textContent = sidebarDisplayedWeather;
+
     } catch (err) {
         console.log(err)
         weatherLi.textContent = 'Current weather data unavailable';
+        sidebarWeatherLi.textContent = 'Weather Unavailable';
     }
 }
 
@@ -440,8 +457,9 @@ fahrOrCels.addEventListener('click', celsiusOrFahrenheit);
 
 function celsiusOrFahrenheit(e) {
     console.log('4: celsiusOrFahrenheit')
-
     e.preventDefault();
+    if(weatherInstance.degreeType === e.target.id) return;
+    
     weatherInstance.toggleDegreeType();
     const temperature = weatherInstance.getFormattedTemperature();
     const degreeType = weatherInstance.degreeType;
@@ -457,3 +475,5 @@ const app = new App();
 
 
 console.log('now listening on port 8080')
+
+
