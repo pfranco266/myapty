@@ -11,4 +11,5 @@ delete workouts
 edit workouts
 sidebar display for responsiveness
 save user workouts to local storage for future use
+refactor of code for organization
 
